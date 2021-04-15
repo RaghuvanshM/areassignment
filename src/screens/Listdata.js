@@ -24,7 +24,8 @@ class Listdata extends Component {
         this.state = {
             isvisiable: false,
             visialesubcategory: '',
-            listdata: Jsondata
+            listdata: Jsondata,
+            isdata:false
         }
     }
     onloadlistPress = () => {
@@ -44,17 +45,18 @@ class Listdata extends Component {
             console.log(filterdata)
             this.setState({
                 listdata: filterdata,
+                isdata:false
             });
         } else {
-            console.log(filterdata)
-            this.setState({ listdata: Jsondata });
-            showMessage({
-                message: 'No Record Found',
-                type: 'info',
-            });
+            this.setState({ listdata: Jsondata,isdata:true });
         }
 
     };
+    rendererror=()=>{
+        return(
+            <Text style={styles.Nodatafound}>No data found</Text>
+        )
+    }
     renddataList = (item, index) => {
 
         let { category, id, subCategories } = item.item
@@ -69,9 +71,9 @@ class Listdata extends Component {
                         <FontAwesome name={visialesubcategory === id ? "arrow-circle-up" : "arrow-circle-down"} size={30} color="white" style={styles.cancelicon} />
                     </View>
 
-                    {visialesubcategory === id ? subCategories && subCategories.map(subcat => {
+                    {visialesubcategory === id ? subCategories && subCategories.map((subcat,i) => {
                         return (
-                            <View>
+                            <View key={i}>
                                 <Text style={{ fontSize: 18, color: 'white', padding: 10 }}>{subcat.subCategory}</Text>
                             </View>
                         )
@@ -82,7 +84,7 @@ class Listdata extends Component {
         )
     }
     render() {
-        let { isvisiable, listdata } = this.state
+        let { isvisiable, listdata,isdata } = this.state
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -110,6 +112,9 @@ class Listdata extends Component {
                                 this.filetWoringData(text);
                             }}
                         />
+                    </View>
+                    <View >
+                        {isdata?this.rendererror():null}
                     </View>
 
                     <FlatList
@@ -171,5 +176,11 @@ var styles = StyleSheet.create({
     header:{
         height:hp('10%'),
         backgroundColor:'#056f80'
+    },
+    Nodatafound:{
+        fontSize:18,
+        marginLeft:wp('12%'),
+        marginTop:hp('1%'),
+        color:'red'
     }
 });
